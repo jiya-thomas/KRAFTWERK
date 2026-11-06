@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     container_name: swiss-project-manager
     ports:
-      - "8000:8000"
+       - "8001:8000"
     environment:
       - DATA_DIR=/app/data
       - DATABASE_URL=/app/data/projects.db
