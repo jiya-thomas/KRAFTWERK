@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KRAFTWERK // SWISS PROJECT MANAGEMENT SYSTEM</title>
+  <link rel="stylesheet" href="/static/css/swiss.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Swiss Header -->
+  <header class="swiss-header">
+    <div class="swiss-header-top">
+      <div style="display: flex; gap: 16px; align-items: center;">
+        <span class="label-micro dark">SYSTEM SPEC // CH-PMS-01</span>
+        <span class="label-micro">BASEL / ZÜRICH / GENÈVE</span>
+      </div>
+      <div style="display: flex; gap: 20px; align-items: center;">
+        <span class="mono" id="zurich-clock" style="font-size: 0.75rem; font-weight: 700;">ZRH // --:--:-- UTC+1</span>
+        <span class="badge" style="background: #eb0029; color: #fff; border: none;">ONLINE</span>
+      </div>
+    </div>
+    
+    <div class="swiss-header-main container">
+      <a href="#" class="brand-emblem" onclick="closeProjectDetail(); return false;">
+        <div class="swiss-cross" title="Swiss Confederation International Style"></div>
+        <div class="brand-title">
+          <span>KRAFTWERK</span>
+          <span class="brand-sub">PROJECT MANAGEMENT SYSTEM</span>
+        </div>
+      </a>
+
+      <div></div>
+
+      <div class="header-actions">
+        <button class="btn btn-primary" onclick="openNewProjectModal()">
+          <span>+ NEW PROJECT</span>
+        </button>
+        <button class="btn btn-sm" onclick="seedSampleData()" title="Reload authentic Swiss demonstration dataset">
+          <span>RESEED DEMO</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Metrics Strip -->
+  <section class="metrics-strip">
+    <div class="container" style="max-width: 1440px; padding: 0; display: contents;">
+      <div class="metric-cell">
+        <span class="label-micro">01 // TOTAL REGISTRY</span>
+        <div class="metric-num" id="stat-total-projects">0</div>
+        <div class="metric-meta">
+          <span class="mono" id="stat-budget-meta">COMMITTED: CHF 0</span>
+        </div>
+      </div>
+      <div class="metric-cell">
+        <span class="label-micro">02 // ACTIVE PIPELINE</span>
+        <div class="metric-num highlight" id="stat-active-projects">0</div>
+        <div class="metric-meta">
+          <span>IN EXECUTION OR REVIEW</span>
+        </div>
+      </div>
+      <div class="metric-cell">
+        <div class="label-micro">03 // DELIVERED TASKS</div>
+        <div class="metric-num" id="stat-completed-tasks">0</div>
+        <div class="metric-meta">
+          <span>VERIFIED DONE</span>
+        </div>
+      </div>
+      <div class="metric-cell">
+        <span class="label-micro">04 // COMPLETION EFFICIENCY</span>
+        <div class="metric-num" id="stat-completion-rate">0%</div>
+        <div class="metric-meta">
+          <span>THROUGHPUT METRIC</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main View Container -->
+  <main class="main-view">
+    <div class="container">
+
+      <!-- ==================== OVERVIEW / GRID VIEW ==================== -->
+      <div id="overview-view">
+        <!-- Controls & Filter Bar -->
+        <div class="controls-bar" style="margin-bottom: 32px; border: var(--border-thick);">
+          <div class="filter-group">
+            <span class="label-micro dark" style="margin-right: 8px;">FILTER:</span>
+            <button class="filter-pill active" data-status="ALL">ALL</button>
+            <button class="filter-pill" data-status="PLANNING">PLANNING</button>
+            <button class="filter-pill" data-status="IN_PROGRESS">IN PROGRESS</button>
+            <button class="filter-pill" data-status="REVIEW">REVIEW</button>
+            <button class="filter-pill" data-status="COMPLETED">COMPLETED</button>
+          </div>
+
+          <div class="search-box">
+            <span style="font-size: 0.8rem; margin-right: 6px; font-weight: 800;">⌕</span>
+            <input type="text" id="search-input" class="search-input" placeholder="SEARCH PROJECTS, CODE, CLIENT...">
+          </div>
+        </div>
+
+        <div class="section-header">
+          <div>
+            <span class="section-index">01.0</span>
+            <span class="section-title">ACTIVE PROJECT REGISTER</span>
+          </div>
+          <span class="label-micro">GRID ARCHITECTURE // 12-COL MODULAR</span>
+        </div>
+
+        <!-- Projects Grid -->
+        <div class="projects-grid" id="projects-grid">
+          <!-- Rendered dynamically via JavaScript -->
+        </div>
+      </div>
+
+      <!-- ==================== PROJECT DETAIL & KANBAN VIEW ==================== -->
+      <div id="project-detail-view" class="project-detail-view">
+        <div class="detail-header-panel">
+          <div class="detail-breadcrumbs">
+            <button class="btn btn-sm" onclick="closeProjectDetail()">← BACK TO REGISTER</button>
+            <span class="mono" style="font-size: 0.85rem; color: #888;">//</span>
+            <span class="mono" id="detail-code" style="font-weight: 800; color: var(--swiss-red);">CH-000</span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; flex-wrap: wrap;">
+            <div>
+              <h1 id="detail-title" style="font-size: 2.2rem; margin-bottom: 8px;">PROJECT TITLE</h1>
+              <div class="label-micro dark" id="detail-client" style="font-size: 0.8rem; margin-bottom: 12px;">CLIENT // CATEGORY</div>
+              <p id="detail-description" style="max-width: 800px; font-size: 0.95rem; color: #333; line-height: 1.5; margin-bottom: 16px;">
+                Description
+              </p>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-end;">
+              <div style="display: flex; gap: 8px;">
+                <span id="detail-status-badge" class="badge">STATUS</span>
+                <span id="detail-priority-badge" class="badge badge-critical">PRIORITY</span>
+              </div>
+              <div class="mono" style="text-align: right; font-size: 0.85rem;">
+                <div>BUDGET: <strong id="detail-budget">CHF 0</strong></div>
+                <div style="color: #666; font-size: 0.75rem; margin-top: 4px;" id="detail-dates">-- / --</div>
+              </div>
+              <div style="display: flex; gap: 8px; margin-top: 8px;">
+                <button class="btn btn-primary btn-sm" onclick="openNewTaskModal('TODO')">+ ADD TASK</button>
+                <button class="btn btn-sm" onclick="openEditProjectModal(state.activeProject.id)">EDIT PROJECT</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <div>
+            <span class="section-index">02.0</span>
+            <span class="section-title">WORKFLOW KANBAN BOARD</span>
+          </div>
+          <span class="label-micro">FOUR-STAGE LINEAR STATE MACHINE</span>
+        </div>
+
+        <!-- 4-Column Swiss Kanban Board -->
+        <div class="kanban-board">
+          <!-- Column 1: TODO -->
+          <div class="kanban-col">
+            <div class="kanban-col-header">
+              <span class="kanban-col-title">01. TO DO</span>
+              <span class="kanban-count" id="count-todo">0</span>
+            </div>
+            <div class="kanban-card-list" id="kanban-todo"></div>
+            <div style="padding: 10px;">
+              <button class="btn btn-sm" style="width: 100%;" onclick="openNewTaskModal('TODO')">+ ADD TASK</button>
+            </div>
+          </div>
+
+          <!-- Column 2: IN PROGRESS -->
+          <div class="kanban-col">
+            <div class="kanban-col-header">
+              <span class="kanban-col-title">02. IN PROGRESS</span>
+              <span class="kanban-count" id="count-inprogress">0</span>
+            </div>
+            <div class="kanban-card-list" id="kanban-inprogress"></div>
+            <div style="padding: 10px;">
+              <button class="btn btn-sm" style="width: 100%;" onclick="openNewTaskModal('IN_PROGRESS')">+ ADD TASK</button>
+            </div>
+          </div>
+
+          <!-- Column 3: REVIEW -->
+          <div class="kanban-col">
+            <div class="kanban-col-header">
+              <span class="kanban-col-title">03. AUDIT & REVIEW</span>
+              <span class="kanban-count" id="count-review">0</span>
+            </div>
+            <div class="kanban-card-list" id="kanban-review"></div>
+            <div style="padding: 10px;">
+              <button class="btn btn-sm" style="width: 100%;" onclick="openNewTaskModal('REVIEW')">+ ADD TASK</button>
+            </div>
+          </div>
+
+          <!-- Column 4: DONE -->
+          <div class="kanban-col">
+            <div class="kanban-col-header">
+              <span class="kanban-col-title">04. DELIVERED / DONE</span>
+              <span class="kanban-count" id="count-done">0</span>
+            </div>
+            <div class="kanban-card-list" id="kanban-done"></div>
+            <div style="padding: 10px;">
+              <button class="btn btn-sm" style="width: 100%;" onclick="openNewTaskModal('DONE')">+ ADD TASK</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- Modal: Project (Create / Edit) -->
+  <div class="modal-overlay" id="modal-project">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-project-title">PROJECT SPECIFICATION</h3>
+        <button class="modal-close" onclick="closeModal('modal-project')">&times;</button>
+      </div>
+      <form id="form-project">
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="label-micro dark">PROJECT CODE (OPTIONAL)</label>
+              <input type="text" id="proj-code" class="form-input mono" placeholder="e.g. CH-240 (AUTO IF EMPTY)">
+            </div>
+            <div class="form-group">
+              <label class="label-micro dark">CLIENT / SPONSOR</label>
+              <input type="text" id="proj-client" class="form-input" placeholder="e.g. Swisscom AG">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="label-micro dark">PROJECT TITLE *</label>
+            <input type="text" id="proj-name" class="form-input" required placeholder="e.g. High-Speed Low Latency Optical Switching">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="label-micro dark">SECTOR / CATEGORY</label>
+              <select id="proj-category" class="form-select">
+                <option value="ENGINEERING">ENGINEERING</option>
+                <option value="INFRASTRUCTURE">INFRASTRUCTURE</option>
+                <option value="ENERGY">ENERGY</option>
+                <option value="LOGISTICS">LOGISTICS</option>
+                <option value="ENVIRONMENT">ENVIRONMENT</option>
+                <option value="SOFTWARE">SOFTWARE</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="label-micro dark">PIPELINE STATUS</label>
+              <select id="proj-status" class="form-select">
+                <option value="PLANNING">PLANNING</option>
+                <option value="IN_PROGRESS">IN PROGRESS</option>
+                <option value="REVIEW">REVIEW</option>
+                <option value="COMPLETED">COMPLETED</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="label-micro dark">PRIORITY TIER</label>
+              <select id="proj-priority" class="form-select">
+                <option value="LOW">LOW</option>
+                <option value="MEDIUM" selected>MEDIUM</option>
+                <option value="HIGH">HIGH</option>
+                <option value="CRITICAL">CRITICAL</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="label-micro dark">BUDGET ALLOCATION (CHF)</label>
+              <input type="number" id="proj-budget" class="form-input mono" min="0" step="500" placeholder="100000">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="label-micro dark">START DATE</label>
+              <input type="date" id="proj-start-date" class="form-input">
+            </div>
+            <div class="form-group">
+              <label class="label-micro dark">DUE DATE</label>
+              <input type="date" id="proj-due-date" class="form-input">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="label-micro dark">ARCHITECTURAL BRIEF / DESCRIPTION</label>
+            <textarea id="proj-description" class="form-textarea" rows="4" placeholder="Brief technical summary, objectives, and deliverables..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn" onclick="closeModal('modal-project')">CANCEL</button>
+          <button type="submit" class="btn btn-primary">SAVE SPECIFICATION</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Task (Create / Edit) -->
+  <div class="modal-overlay" id="modal-task">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-task-title">TASK DISPATCH</h3>
+        <button class="modal-close" onclick="closeModal('modal-task')">&times;</button>
+      </div>
+      <form id="form-task">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="label-micro dark">TASK TITLE *</label>
+            <input type="text" id="task-title" class="form-input" required placeholder="e.g. Conduct thermal dissipation simulation">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="label-micro dark">LEAD ASSIGNEE</label>
+              <input type="text" id="task-assignee" class="form-input mono" placeholder="e.g. M. SCHNEIDER">
+            </div>
+            <div class="form-group">
+              <label class="label-micro dark">INITIAL STATUS</label>
+              <select id="task-status" class="form-select">
+                <option value="TODO">01. TO DO</option>
+                <option value="IN_PROGRESS">02. IN PROGRESS</option>
+                <option value="REVIEW">03. REVIEW</option>
+                <option value="DONE">04. DONE</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="label-micro dark">PRIORITY</label>
+              <select id="task-priority" class="form-select">
+                <option value="LOW">LOW</option>
+                <option value="MEDIUM" selected>MEDIUM</option>
+                <option value="HIGH">HIGH</option>
+                <option value="CRITICAL">CRITICAL</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="label-micro dark">ESTIMATED HOURS</label>
+              <input type="number" id="task-hours" class="form-input mono" min="0" step="0.5" placeholder="16.0">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="label-micro dark">DUE DATE</label>
+            <input type="date" id="task-due-date" class="form-input">
+          </div>
+
+          <div class="form-group">
+            <label class="label-micro dark">TASK NOTES / SCOPE</label>
+            <textarea id="task-description" class="form-textarea" rows="3" placeholder="Acceptance criteria, dependencies, references..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn" onclick="closeModal('modal-task')">CANCEL</button>
+          <button type="submit" class="btn btn-dark">COMMIT TASK</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Footer -->
+  <footer class="swiss-footer">
+    <div class="container footer-content">
+      <div>
+        <strong>KRAFTWERK // SWISS STYLE PROJECT SYSTEM</strong> — ACCURACY / OBJECTIVITY / MINIMALISM
+      </div>
+      <div>
+        DOCKERIZED ASYNCHRONOUS BACKEND // PERSISTENT SQLITE ARCHITECTURE
+      </div>
+    </div>
+  </footer>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
